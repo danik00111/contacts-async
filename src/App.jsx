@@ -11,16 +11,18 @@ function App() {
   const dispatch = useDispatch()
 
   useEffect(()=>{
-    dispatch(getContactsThunk());
+    dispatch(getContactsThunk())
   },[])
+const addcontact = async (e) => {
+  e.preventDefault();
+  const name = e.target.elements.inputname.value
+  const number = e.target.elements.inputnumber.value
 
-  const addcontact =e=> {
-    e.preventDefault()
-    dispatch(addContactThunk({
-      name: e.target.elements.inputname.value,
-      number: e.target.elements.inputnumber.value
-    }))
-  }
+  await dispatch(addContactThunk({ name, number }))
+  e.target.elements.inputname.value = ""
+  e.target.elements.inputnumber.value = ""
+};
+
 
   const delcontact =e=> {
     e.preventDefault()
@@ -47,17 +49,13 @@ function App() {
     <input type="text" name="filter" id="filter" placeholder='Filter'
       onInput={filt}/>
     <ul>
-      {contacts.filter(x=>x.name.toLowerCase().includes(filter.toLowerCase())).map((x,i)=>(
+      {contacts.filter(x => x && x.name && x.name.toLowerCase().includes(filter.toLowerCase())).map((x,i)=>(
         <li key={x.id}>
           <p>
-            <span style={{fontSize:'0.5em'}}>#{x.id}</span>
-            &nbsp;
-            {x.name}:
-            &nbsp;
-            <code style={{fontStyle:'italic',color:'yellow'}}>{x.number}</code>
+            <span style={{fontSize:'0.5em'}}>#{x.id}</span>&nbsp;{x.name}:&nbsp;<code style={{fontStyle:'italic',color:'yellow'}}>{x.number}</code>
           </p>
         </li>
-        ))}
+      ))}
     </ul>
   </>)
 }
